@@ -1,0 +1,22 @@
+{
+  "name": "devtinder",
+  "version": "1.0.0",
+  "description": "dummy tinder for dev",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./src/app.js",
+    "dev":"nodemon ./src/app.js"
+  },
+  "keywords": [
+    "node",
+    "js",
+    "javascript",
+    "backend"
+  ],
+  "author": "Hemant",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2",
+    "nodemon": "^3.1.9"
+  }
+}

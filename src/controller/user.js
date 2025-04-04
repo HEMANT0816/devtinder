@@ -68,7 +68,8 @@ const userLogin=async (req,res)=>{
             throw new Error("Invalid Credential")
         }
 
-        const token=await JWT.sign({UserID:user._id,},"Hemant0816@");
+        const token= await user.getJwtToken();
+        console.log("token by schema",token)
 
         res.cookie('token', token, { 
             httpOnly: true,   // Prevents access from JavaScript (security)
@@ -130,4 +131,20 @@ const updateUser =async (req,res)=>{
 }
 
 
-module.exports={userSignUp,userLogin,updateUser}
+const logout=async(req,res)=>{
+    try {
+        
+        // res.send("hi")
+
+        res.cookie("token", null, {
+    expires: new Date(Date.now()),
+  })
+  .json({message:"Logout Successful"});
+
+    } catch (error) {
+        res.send("error",error.message)
+    }
+}
+
+
+module.exports={userSignUp,userLogin,updateUser,logout}

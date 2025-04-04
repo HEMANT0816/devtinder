@@ -1,5 +1,7 @@
 const JWT=require("jsonwebtoken")
 
+const User=require("../model/user")
+
 const Auth=async (req,res,next)=>{
 
 try {
@@ -18,7 +20,14 @@ if(!data){
     throw new Error("login required")
 }
 
-req.userId=data.UserID
+req.userId=data.UserID;
+const user=await User.findById(data.UserID);
+
+req.user=user;
+
+
+
+
 
 next(); 
 

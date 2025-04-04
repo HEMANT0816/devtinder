@@ -1,5 +1,6 @@
 const mongoose=require("mongoose");
 const validator=require("validator")
+const JWT=require("jsonwebtoken")
 
 const userSchema=new mongoose.Schema({
     firstName:{
@@ -59,9 +60,28 @@ const userSchema=new mongoose.Schema({
     },
     skills:{
         type:[String],
+        validate:(arr)=>{
+            if(arr.length>5){
+                throw new Error("can't Add  skills more then 5")
+            }
+
+            const uniqueSkills = new Set(arr);
+            if(!uniqueSkills.size === arr.length){
+                throw new Error("cant Add the Duplicate skills")
+       };
+        }
     }
 
 }) ;
+
+
+userSchema.methods.getJwtToken=async function (){
+
+    const user=this;
+    const token=await JWT.sign({UserID:user._id,},"Hemant0816@");
+
+    return token
+}
 
 const User=mongoose.model("user",userSchema);
 

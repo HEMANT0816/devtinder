@@ -69,7 +69,7 @@ const userLogin=async (req,res)=>{
         }
 
         const token= await user.getJwtToken();
-        console.log("token by schema",token)
+      
 
         res.cookie('token', token, { 
             httpOnly: true,   // Prevents access from JavaScript (security)

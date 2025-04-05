@@ -8,7 +8,7 @@ try {
     const cookieToken=req.cookies.token;
 
 
-console.log("token->",cookieToken);
+
 
 if(!cookieToken){
     throw new Error("login required")

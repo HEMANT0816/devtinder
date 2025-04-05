@@ -1,6 +1,7 @@
 const mongoose=require("mongoose");
 const validator=require("validator")
 const JWT=require("jsonwebtoken")
+const bcrypt=require("bcrypt");
 
 const userSchema=new mongoose.Schema({
     firstName:{
@@ -39,6 +40,11 @@ const userSchema=new mongoose.Schema({
     },
     age:{
         type:Number,
+        validate:(value)=>{
+            if(value<18 || value >60){
+                throw new Error("invalid age")
+            }
+        }
     },
     password:{
         type:String,
@@ -61,14 +67,18 @@ const userSchema=new mongoose.Schema({
     skills:{
         type:[String],
         validate:(arr)=>{
-            if(arr.length>5){
-                throw new Error("can't Add  skills more then 5")
-            }
-
             const uniqueSkills = new Set(arr);
-            if(!uniqueSkills.size === arr.length){
+            
+            if(uniqueSkills.size !== arr.length){
+               
                 throw new Error("cant Add the Duplicate skills")
-       };
+            }
+            if(arr.length>50){
+                throw new Error("can't Add  skills more then 50")
+            }
+            
+
+            
         }
     }
 
@@ -81,6 +91,13 @@ userSchema.methods.getJwtToken=async function (){
     const token=await JWT.sign({UserID:user._id,},"Hemant0816@");
 
     return token
+}
+userSchema.methods.isValidPassword=async function (password){
+
+    const user=this;
+    const isMatch=await bcrypt.compare(password,user.password);
+
+    return isMatch
 }
 
 const User=mongoose.model("user",userSchema);

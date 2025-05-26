@@ -30,7 +30,7 @@ app.use("/auth",authRouter)
 app.use("/user",userRouter)
 app.use("/request",requestRouter)
 app.use("/profile",profileRouter)
-// console.log("user->",User)
+// console.log("user->",User) 
 
 
 const SECRET_KEY=process.env.SECRET_KEY;
@@ -38,12 +38,12 @@ const SECRET_KEY=process.env.SECRET_KEY;
 console.log(SECRET_KEY)
 
 
-
+const PORT=process.env.PORT || 4002;
 database.connect()
 .then(()=>{
     console.log("Db connection Successfull")
-    app.listen(4002,()=>{
-        console.log("app is listening on port number 3000")
+    app.listen(PORT,()=>{
+        console.log(`app is listening on port number ${PORT}`)
     })
 })
 .catch((err)=>console.log("Failure in db connection"));

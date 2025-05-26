@@ -2,6 +2,7 @@ const User=require("../model/user");
 const {userSignUpValidation}=require("../helper/user");
 const bcrypt=require("bcrypt");
 const JWT=require("jsonwebtoken");
+const ConnectionRequest=require("../model/ConnectionRequest")
 
 require("dotenv").config();
 
@@ -146,5 +147,62 @@ const logout=async(req,res)=>{
     }
 }
 
+const getUserData=async (req,res)=>{
+    try {
+        const userId=req.userId;
 
-module.exports={userSignUp,userLogin,updateUser,logout}
+        const userFeed=req.params.userId;
+
+
+
+        if(userId===userFeed){
+            throw new Error("You can feed yourself")
+        }
+
+        const notvalidStatus=["ignore","rejected"]
+
+        const connectionRequests = await ConnectionRequest.find({
+                    
+                        $or: [
+                        { senderId: userId, status: $or["ignore","rejected"] },
+                        { receiverId: userId, status: $or["ignore","rejected"] }
+                        ]
+                       
+                }).select('senderId receiverId').lean(); // lean() for performance if you don't need mongoose doc methods
+        
+                const userIds = new Set();
+        
+                connectionRequests.forEach((request) => {
+                    
+                        userIds.add(request.senderId.toString());
+                        userIds.add(request.receiverId.toString());
+                    
+                });
+
+                if(userIds.include(userFeed)){
+                    throw new Error("cant see their profile")
+                }
+
+                const userData=User.findById(userFeed);
+
+                res.json({
+                    data:userData
+                })
+
+
+
+
+        
+
+        
+    } catch (error) {
+        console.log("cant able to retrieve the data of the user");
+
+        res.status(401).json(
+            {message:error.message}
+        )
+    }
+}
+
+
+module.exports={userSignUp,userLogin,updateUser,logout,getUserData}

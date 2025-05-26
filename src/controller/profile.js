@@ -1,4 +1,4 @@
-const User=require("../model/user");
+const User=require("../model/user")
 const {validateUserInputForEditProfile}=require("../helper/user")
 const validator=require("validator")
 
@@ -58,6 +58,8 @@ const editProfile=async (req,res)=>{
         
 
         await updateUser.save();
+
+        updateUser.password="";
 
         res.json({
             message:"User Updated Successfully",

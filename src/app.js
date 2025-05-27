@@ -13,6 +13,8 @@ const User=require("./model/user");
 
 const app=express();
 require("dotenv").config();
+
+
 //using middleware
 
 app.use(express.json());

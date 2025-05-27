@@ -4,7 +4,7 @@ const Router=express.Router();
 
 
 //fetching controllers 
-const {userSignUp,userLogin,updateUser,logout}=require("../controller/user")
+const {userSignUp,userLogin,updateUser,logout,sendOtp}=require("../controller/user")
 
 //fetching Middleware
 
@@ -18,6 +18,7 @@ Router.post("/signup",userSignUp);
 Router.post("/login",userLogin);
 Router.patch("/user",Auth,updateUser);
 Router.post("/logout",logout);
+Router.post("/otp",sendOtp);
 
 
 //exporting the routes;

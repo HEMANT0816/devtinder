@@ -3,12 +3,66 @@ const {userSignUpValidation}=require("../helper/user");
 const bcrypt=require("bcrypt");
 const JWT=require("jsonwebtoken");
 const ConnectionRequest=require("../model/ConnectionRequest")
-
+const validator = require("validator");
+const Otp = require("../model/Otp");
+const sendEmail = require("../helper/sendGmail"); 
 require("dotenv").config();
 
 const SECRET_KEY=process.env.SECRET_KEY;
 
+const sendOtp=async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) {
+            return res.status(400).json({ message: "Email is required" });
+        }
+        // Check if the email is valid
+        if (!validator.isEmail(email)) {
+            return res.status(400).json({ message: "Invalid email format" });
+        }
+        // Generate a random 6-digit OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        // Check if the OTP is a valid 6-digit number
+        if (!/^\d{6}$/.test(otp)) {
+            return res.status(400).json({ message: "Invalid OTP format" });
+        }
+        //hash the OTP
+        const hashedOtp = await bcrypt.hash(otp, 10);
 
+        console.log(sendEmail);
+        //send the OTP to the user's email
+
+        await sendEmail.sendGmail(email, "Your OTP Code", `Your OTP code is: ${otp}`);
+        
+        //check if the OTP already exists for the user
+        const existingOtp = await Otp.findOne({ userId: email });
+        if (existingOtp) {   
+            // If an OTP already exists, update it
+            existingOtp.body = hashedOtp;
+            await existingOtp.save();
+        } else {
+            // If no OTP exists, create a new one
+            const otpInstance = new Otp({
+                body: hashedOtp,
+                userId: email
+            });
+            await otpInstance.save();
+        }
+
+        console.log(`OTP for ${email}: ${otp}`);
+
+        res.status(200).json({  
+            message: "OTP sent successfully",
+            otp: otp // For testing purposes, you might want to remove this in production
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Error sending OTP",
+            error: error.message
+        });
+        
+    }
+}
 
 
 const userSignUp =async (req,res)=>{
@@ -202,7 +256,7 @@ const getUserData=async (req,res)=>{
             {message:error.message}
         )
     }
-}
+};
 
 
-module.exports={userSignUp,userLogin,updateUser,logout,getUserData}
+module.exports={userSignUp,userLogin,updateUser,logout,getUserData,sendOtp};

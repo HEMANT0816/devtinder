@@ -136,7 +136,7 @@ const userLogin=async (req,res)=>{
 
         res.json({
             message:"user login suceessfully",
-            data:user
+            data:user.firstName+" "+user.lastName,
         })
         
     } catch (error) {

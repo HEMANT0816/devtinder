@@ -132,11 +132,13 @@ const userLogin=async (req,res)=>{
             // sameSite: 'None', // Cross-origin cookies need 'None' + Secure
             maxAge: 24 * 60 * 60 * 1000 // 1 day
           });
+          user.password=undefined; // Remove password from response
+         
 
 
         res.json({
             message:"user login suceessfully",
-            data:user.firstName+" "+user.lastName,
+            data:user,
         })
         
     } catch (error) {

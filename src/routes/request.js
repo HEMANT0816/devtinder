@@ -12,6 +12,6 @@ requestRoutes.post("/review/:status/:requestId",Auth,reviewConnectionRequest);
 
 requestRoutes.get("/get",Auth,getAllConnectionRequest);
 
-requestRoutes.get("/feed/:userId",Auth,userFeed);
+requestRoutes.get("/feed",Auth,userFeed);
 
 module.exports=requestRoutes;

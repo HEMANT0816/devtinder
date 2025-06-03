@@ -1,6 +1,7 @@
 const User=require("../model/user")
 const {validateUserInputForEditProfile}=require("../helper/user")
-const validator=require("validator")
+const validator=require("validator");
+const { uploadPhoto } = require("../helper/photosUpload");
 
 
 
@@ -27,7 +28,7 @@ const viewProfile=async (req,res)=>{
         })
         
     } catch (error) {
-        res.json({
+        res.status(401).json({
             message:"problem in getting the profile data"+error.message,
         })
     }
@@ -37,6 +38,8 @@ const editProfile=async (req,res)=>{
     try {
 
         const isValidUpdate=validateUserInputForEditProfile(req);
+
+        const {photoUrl}=req.body;
 
         //now just make a updated user
 
@@ -55,6 +58,13 @@ const editProfile=async (req,res)=>{
             updateUser[key]=req.body[key];
             
          });
+
+         if(photoUrl){
+           const result= await uploadPhoto(photoUrl)
+           
+           const updatedURL=result.secure_url;
+           updateUser.photoUrl=updatedURL
+         }
         
 
         await updateUser.save();
@@ -69,7 +79,7 @@ const editProfile=async (req,res)=>{
 
         
     } catch (error) {
-        res.json({
+        res.status(400).json({
             message:"problem occur while updating is ->"+error.message
         })
     }
@@ -110,7 +120,7 @@ const editPassword=async (req,res)=>{
         })
         
     } catch (error) {
-        res.json({
+        res.status(400).json({
             message:"problem occur while updating is ->"+error.message
         })
     }

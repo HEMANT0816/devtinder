@@ -64,6 +64,11 @@ const userSchema=new mongoose.Schema({
         trim:true,
         default:"Eager to Make New Friends"
     },
+    photoUrl:{
+        type:String,
+        trim:true,
+        default:"https://res.cloudinary.com/dmrzlkwx4/image/upload/v1748946528/x467zc4l25d1fqvrf1b6.jpg"
+    },
     skills:{
         type:[String],
         validate:(arr)=>{

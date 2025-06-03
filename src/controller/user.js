@@ -142,7 +142,7 @@ const userLogin=async (req,res)=>{
         })
         
     } catch (error) {
-        res.json({
+        res.status(401).json({
             message:"Login failed due to ->"+error.message
         })
     }

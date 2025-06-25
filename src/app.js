@@ -4,8 +4,9 @@ const express=require("express");
 const database=require("./config/database");
 const userRouter=require("./routes/user");
 const authRouter=require("./routes/auth")
-const profileRouter=require("./routes/profile")
-const requestRouter=require("./routes/request")
+const profileRouter=require("./routes/profile");
+const requestRouter=require("./routes/request");
+
 var cors=require("cors");
 
 const cookieParser=require("cookie-parser")
@@ -14,6 +15,7 @@ const User=require("./model/user");
 
 const app=express();
 require("dotenv").config();
+
 app.use(cors(
     {
         origin: "http://localhost:5173", // Replace with your frontend URL

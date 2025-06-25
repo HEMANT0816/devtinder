@@ -152,6 +152,7 @@ const userFeed = async (req, res) => {
         }).select('senderId receiverId').lean(); // lean() for performance if you don't need mongoose doc methods
 
         const userIds = new Set();
+        userIds.add(userId)
 
         connectionRequests.forEach((request) => {
          
@@ -182,5 +183,28 @@ const userFeed = async (req, res) => {
     }
 };
 
+const pendingRequests = async (req, res) => {
+    try {  
+        const userId = req.userId;
 
-module.exports = { sendConnectionRequest ,reviewConnectionRequest,getAllConnectionRequest, userFeed };
+        const pendingRequests = await ConnectionRequest.find({
+            $or: [
+                { receiverId: userId, status: 'interested' }
+            ]
+        }).populate('senderId', 'firstName lastName age photoUrl gender about').limit(10).exec();
+
+
+        res.status(200).json({
+            message: 'Pending connection requests fetched successfully',
+            pendingRequests
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: 'Error while fetching pending connection requests',
+            error: error.message
+        });
+    }
+};
+
+module.exports = { sendConnectionRequest ,reviewConnectionRequest,getAllConnectionRequest, userFeed, pendingRequests };

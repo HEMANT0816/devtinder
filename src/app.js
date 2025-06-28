@@ -18,7 +18,7 @@ require("dotenv").config();
 
 app.use(cors(
     {
-        origin: "http://localhost:5173", // Replace with your frontend URL
+        origin: "http://13.60.236.250/4002", // Replace with your frontend URL
         credentials: true, // Allow cookies to be sent
     }
 ))
